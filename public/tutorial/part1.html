@@ -23,7 +23,7 @@ var game = new Phaser.Game({
   create: this.create, 
   update: this.update,
   crisp: true,
-  roundPixels: false,
+  roundPixels: true,
   alignH: true,
   alignV: true,
   scaleH: 2,
@@ -36,15 +36,15 @@ var game = new Phaser.Game({
 
     init: function() {
 
-    //   console.assert(this.scale.pageAlignHorizontally, 'pageAlignHorizontally');
-    //   console.assert(this.scale.pageAlignVertically, 'pageAlignVertically');
-    //   console.assert(this.game.canvas.style.width === '800px', 'canvas.style.width');
-    //   console.assert(this.game.renderer.renderSession.roundPixels, 'roundPixels');
+      console.assert(this.scale.pageAlignHorizontally, 'pageAlignHorizontally');
+      console.assert(this.scale.pageAlignVertically, 'pageAlignVertically');
+      console.assert(this.game.canvas.style.width === '800px', 'canvas.style.width');
+      console.assert(this.game.renderer.renderSession.roundPixels, 'roundPixels');
       
-    //   var imageRendering = this.game.canvas.style.imageRendering;
-    //   console.assert((imageRendering === 'pixelated')   ||
-    //                  (imageRendering === 'crisp-edges') || 
-    //                  (imageRendering === '-webkit-optimize-contrast'), 'imageRendering');
+      var imageRendering = this.game.canvas.style.imageRendering;
+      console.assert((imageRendering === 'pixelated')   ||
+                     (imageRendering === 'crisp-edges') || 
+                     (imageRendering === '-webkit-optimize-contrast'), 'imageRendering');
       
       this.game.debug.font = '14px monospace';
       this.game.debug.lineHeight = 15;
@@ -87,11 +87,11 @@ var game = new Phaser.Game({
         this.ground.body.immovable = true;
 
         //  Now let's create two ledges
-        this.ledge = this.platforms.create(400, 400, 'ground');
+        this.ledge = this.platforms.create(400, 480, 'ground');
 
         this.ledge.body.immovable = true;
 
-        this.ledge = this.platforms.create(-150, 250, 'ground');
+        this.ledge = this.platforms.create(-100, 440, 'ground');
 
         this.ledge.body.immovable = true;
 
@@ -104,7 +104,7 @@ var game = new Phaser.Game({
 
         //  Player physics properties. Give the little guy a slight bounce.
         this.player.body.bounce.y = 0.2;
-        this.player.body.gravity.y = 300;
+        this.player.body.gravity.y = 900;
         this.player.body.collideWorldBounds = true;
 
         //  Our two animations, walking left and right.
@@ -122,7 +122,7 @@ var game = new Phaser.Game({
             var star = this.stars.create(i * 70, 0, 'star');
 
             //  Let gravity do its thing
-            star.body.gravity.y = 6;
+            star.body.gravity.y = 900;
 
             //  This just gives each star a slightly random bounce value
             star.body.bounce.y = 0.7 + Math.random() * 0.2;
@@ -170,6 +170,9 @@ var game = new Phaser.Game({
         //stars
         this.game.physics.arcade.collide(this.stars, this.platforms);
         this.game.physics.arcade.overlap(this.player, this.stars, this.collectStar, null, this);
+    },
+    render: function() {
+    
     },
     collectStar: function(player, star) {
 
