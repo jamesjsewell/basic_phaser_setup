@@ -26,33 +26,20 @@ var game = new Phaser.Game({
   roundPixels: true,
   alignH: true,
   alignV: true,
-  scaleH: 2,
-  scaleV: 2,
+  scaleH: 1,
+  scaleV: 1,
   trimH: 0,
   trimV: 0,
-  width: 800,
-  height: 600,
+  scaleMode: Phaser.ScaleManager.SHOW_ALL,
+  antialias: true,
   state:{
 
     init: function() {
 
-      console.assert(this.scale.pageAlignHorizontally, 'pageAlignHorizontally');
-      console.assert(this.scale.pageAlignVertically, 'pageAlignVertically');
-      console.assert(this.game.canvas.style.width === '800px', 'canvas.style.width');
-      console.assert(this.game.renderer.renderSession.roundPixels, 'roundPixels');
-      
-      var imageRendering = this.game.canvas.style.imageRendering;
-      console.assert((imageRendering === 'pixelated')   ||
-                     (imageRendering === 'crisp-edges') || 
-                     (imageRendering === '-webkit-optimize-contrast'), 'imageRendering');
-      
-      this.game.debug.font = '14px monospace';
-      this.game.debug.lineHeight = 15;
-      this.platforms
-      this.player
-      this.cursors
+      game.input.onDown.add(function() { console.log('clicked') })
+
       this.score = 0
-      this.scoreText;
+     
 
     },
     preload: function() {
@@ -62,7 +49,7 @@ var game = new Phaser.Game({
         this.game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
     },
     create: function() {
-
+        
         cursors = this.game.input.keyboard.createCursorKeys();
         
         //  We're going to be using physics, so enable the Arcade Physics system
@@ -93,6 +80,10 @@ var game = new Phaser.Game({
 
         this.ledge = this.platforms.create(-100, 440, 'ground');
 
+        this.ledge.body.immovable = true;
+
+        this.ledge = this.platforms.create(200, 400, 'ground');
+        this.ledge.scale.setTo(.2,.5)
         this.ledge.body.immovable = true;
 
         // ready player one
@@ -132,6 +123,12 @@ var game = new Phaser.Game({
         this.scoreText = this.game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     },
     update: function() {
+        game.world.setBounds(0, 0, 1920, 1920);
+        //  Notice that the sprite doesn't have any momentum at all,
+        //  it's all just set by the camera follow type.
+        //  0.1 is the amount of linear interpolation to use.
+        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+        game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
         //  Collide the player and the stars with the this.platforms
         var hitPlatform = this.game.physics.arcade.collide(this.player, this.platforms);
@@ -171,8 +168,10 @@ var game = new Phaser.Game({
         this.game.physics.arcade.collide(this.stars, this.platforms);
         this.game.physics.arcade.overlap(this.player, this.stars, this.collectStar, null, this);
     },
-    render: function() {
-    
+    render: function(){
+        var debug = this.game.debug;
+        debug.scale(20, 20, '#fff');
+        debug.phaser(10, 580);
     },
     collectStar: function(player, star) {
 
@@ -181,7 +180,8 @@ var game = new Phaser.Game({
 
         //  Add and update the score
         this.score += 10;
-        this.scoreText.text = 'Score: ' + this.score;
+        console.log(this.score)
+        this.scoreText.text = 'score: ' + this.score;
 
     }
     
