@@ -120,7 +120,9 @@ var game = new Phaser.Game({
         }
 
         //score
-        this.scoreText = this.game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        this.scoreText = game.add.text(650, 0, "score: 0", { font: "32px Arial", fill: "#ffffff", align: "right" });
+        this.scoreText.fixedToCamera = true;
+        this.scoreText.cameraOffset.setTo(650, 0);
     },
     update: function() {
         game.world.setBounds(0, 0, 1920, 1920);
